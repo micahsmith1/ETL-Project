@@ -80,6 +80,10 @@ for r in range(1,11):
 # store csv into df
 csv_file = "resources/quotes.csv"
 quotes_df = pd.read_csv(csv_file)
+quotes_df.head()
+
+# review columns
+quotes_df.columns
 
 # clean df
 quotes_df.columns = ['quote_id', 'id', 'text', 'name', 'born',
@@ -88,8 +92,10 @@ quotes_df.columns = ['quote_id', 'id', 'text', 'name', 'born',
 # select columns for new quotes df
 new_quotes_df = quotes_df[['id', 'name', 'text']].copy()
 
+
 # select columns for new author info df
 new_author_df = quotes_df[['id', 'name', 'born', 'description']].copy()
+
 
 # select columns for new tags df
 new_tag_df = quotes_df[['id', 'quote_id', 'tags']].copy()
