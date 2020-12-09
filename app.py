@@ -13,12 +13,9 @@ app = Flask(__name__)
 @app.route("/")
 def welcome():
     return (
-        f"Welcome to the Hawaii Climate Analysis API!<br/>"
         f"Available Routes:<br/>"
-        f"/quotes"
-        f"/api/v1.0/stations<br/>"
-        f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/temp/start/end"
+        f"/quotes<br/>"
+        f"/authors<br/>"
     )
 # Kyle worked in this 
 @app.route("/quotes")
