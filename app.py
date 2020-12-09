@@ -20,10 +20,10 @@ def welcome():
         f"/api/v1.0/tobs<br/>"
         f"/api/v1.0/temp/start/end"
     )
-
+# Kyle worked in this 
 @app.route("/quotes")
 def quotes():
-    results = engine.execute("select text, name from quotes")
+    results = engine.execute("select text, author_name from quotes")
     total = 0  
     all_quotes = []
     for text,author in results:
@@ -33,6 +33,20 @@ def quotes():
         quote_dict["author"] = author
         all_quotes.append(quote_dict)
     return jsonify(all_quotes)
+# Miyshael 
+@app.route("/authors")
+def authors():
+    results = engine.execute("select name, born, description from author")
+    total = 0  
+    all_authors = []
+    for name, born, description in results:
+        total+=1
+        authors_dict = {}
+        authors_dict["name"] = name
+        authors_dict["born"] = born
+        authors_dict["description"] = description
+        all_authors.append(authors_dict)
+    return jsonify(all_authors)
 
 if __name__ == "__main__":
     app.run(debug=True)
