@@ -16,20 +16,68 @@ def welcome():
         f"Available Routes:<br/>"
         f"/quotes<br/>"
         f"/authors<br/>"
+        f"/top10tags<br/>"
+        f"/tags<br/>"
     )
+
+
 # Kyle worked in this 
 @app.route("/quotes")
 def quotes():
-    results = engine.execute("select text, author_name from quotes")
-    total = 0  
-    all_quotes = []
-    for text,author in results:
-        total+=1
-        quote_dict = {}
-        quote_dict["text"] = text
-        quote_dict["author"] = author
-        all_quotes.append(quote_dict)
-    return jsonify(all_quotes)
+    result = {}
+    result_set = engine.execute('''select id, author_name, text
+    from quotes q inner join author a on q.author_name = a.name
+    order by id''')
+    total_quotes = result_set.rowcount
+    quotes = []
+    for row in result_set:
+        quote = {}
+        quote['text'] = row.text
+        quote['author'] = row.author_name
+        tags = []
+        tags_result = engine.execute(
+            f'select tag  from tags where quote_id= {row.id}')
+        for tagrow in tags_result:
+            tags.append(tagrow.tag)
+        quote['tags'] = tags
+        quotes.append(quote)
+    result['total'] = total_quotes      
+    result['quotes'] = quotes
+    return jsonify(result)
+
+@app.route("/top10tags")
+def top10tags():
+    result = []
+    tags_result_set = engine.execute('''select tag , count(*) as total from tags
+    group by tag
+    order by total desc
+    limit 10''')
+    for row in tags_result_set:
+        tag = {}
+        tag['tag'] = row.tag
+        tag['quote count'] = row.total
+        result.append(tag)
+    return jsonify(result)
+
+# @app.route("/tags")
+# def tags():
+#     result = {}
+#     details = []
+#     tags_result_set = engine.execute('''select tag ,q.text, count(*) as total from tags
+#     t inner join quotes q on t.quote_id = q.id
+#     group by tag,q.text
+#     order by tag''')
+#     total_tags = tags_result_set.rowcount
+#     for row in tags_result_set:
+#         tag = {}
+#         tag['tag'] = row.tag
+#         tag['quote count'] = row.total
+#         details.append(tag)
+#     result['count'] = total_tags
+#     result['details'] = details
+#     return jsonify(result)
+
+
 # Miyshael 
 @app.route("/authors")
 def authors():
